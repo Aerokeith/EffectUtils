@@ -7,6 +7,7 @@
     The ramp-up/down durations (for all subsequent ramps) can be set using setRamp() or using one of the overloaded start() functions. 
 */
 #include <Arduino.h>
+#include "UtilConfig.h"
 #include "Ramp.h"
 
 
@@ -17,19 +18,7 @@
 */
 rampClass::rampClass() {
   rampTime = 0;   // default is no ramp until explicitly set by setRamp() or start()
-  stepPeriod = 0.01;  // set default period of 10ms (in case setStep() isn't called)
   active = false;
-}
-
-
-/* rampClass::setStep()
-    Sets the ramp step period to be used by rampClass::start(). 
-  Parameters: 
-    float stepPerMs: Step duration in integer milliseconds
-  Returns: None
-*/
-void rampClass::setStep(uint16_t stepPeriodMs) {
-  stepPeriod = (float) stepPeriodMs / 1000;
 }
 
 
@@ -57,13 +46,13 @@ void rampClass::start(float duration) {
   float rampTimeNow;    // potentially-constrained ramp time for this start instance
 
   if (duration == 0) {  // if ramp has infinite duration
-    rampSteps = (uint16_t) ceil(rampTime / stepPeriod);  // number of FRAME_PERIOD steps in up or down ramp
+    rampSteps = (uint16_t) ceil(rampTime / STEP_PERIOD);  // number of STEP_PERIOD steps in up or down ramp
     holdSteps = 0;  // hold phase has infinite duration after ramp up
   }
   else {  // finite duration ramp
     rampTimeNow = constrain(rampTime, 0, (duration / 2));  // force ramp duration to be no more than 1/2 the total duration
-    rampSteps = (uint16_t) ceil(rampTimeNow / stepPeriod);  // number of FRAME_PERIOD steps in up or down ramp
-    totalSteps = (uint16_t) ceil(duration / stepPeriod); // total # steps including ramps
+    rampSteps = (uint16_t) ceil(rampTimeNow / STEP_PERIOD);  // number of STEP_PERIOD steps in up or down ramp
+    totalSteps = (uint16_t) ceil(duration / STEP_PERIOD); // total # steps including ramps
     holdSteps = max((totalSteps - (2 * rampSteps)), 1); // remaining duration is hold period (ensure at least one hold step)
   }
   phase = ((rampSteps == 0) ? hold : rampUp); // start in rampUp phase unless no ramp steps

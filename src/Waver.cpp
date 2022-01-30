@@ -20,10 +20,10 @@
     duration is automatically set to the same duration as the wave, although the ramp-up and ramp-down durations must be separately 
     configured with waveClass::setRamp().
 
-    The step() function must be called once per effect step period, which is defined by calling setStep() prior to the first call to
-    start(). Note that the waveClass::step() fuunction includes a call to rampClass::step() for the embedded rampClass object. 
+    The step() function must be called once per effect step period, which is defined by the global STEP_PERIOD value in UtilConfig.h 
 */
 #include <Arduino.h>
+#include "UtilConfig.h"
 #include "Waver.h"
 
 
@@ -36,19 +36,6 @@
 */
 waveClass::waveClass() {
   active = false;   
-  stepPeriod = 0.01;  // set default period of 10ms (in case setStep() isn't called)
-}
-
-
-/* waveClass::setStep()
-    Sets the wave step period to be used by waveClass::start(). Also sets the (same) period for the embedded ramp function
-  Parameters: 
-    float stepPerMs: Step duration in integer milliseconds
-  Returns: None
-*/
-void waveClass::setStep(uint16_t stepPeriodMs) {
-  stepPeriod = (float) stepPeriodMs / 1000;
-  ramp.setStep(stepPeriodMs);
 }
 
 
@@ -65,9 +52,9 @@ void waveClass::start(float duration, float frequency, float ampl) {
   if (duration == 0)  // if infinite duration
     waveSteps = 0;    // signal to step()
   else
-    waveSteps = (uint16_t) ceil(duration / stepPeriod);  // total number of steps in wave effect
+    waveSteps = (uint16_t) ceil(duration / STEP_PERIOD);  // total number of steps in wave effect
       // angle change per step; Negative angle delta makes travelling wave move in "positive" direction
-  phaseDelta = -(TWO_PI * frequency * stepPeriod);
+  phaseDelta = -(TWO_PI * frequency * STEP_PERIOD);
   phaseAngle = -(TWO_PI / 4); // sin(-π/s) is minimum point of wave, which results in val() = 0
   stepNum = 0;
   active = true;
