@@ -28,8 +28,8 @@ rampClass::rampClass() {
     float stepPerMs: Step duration in integer milliseconds
   Returns: None
 */
-void rampClass::setStep(uint16_t stepPerMs) {
-  stepPeriod = (float) stepPerMs / 1000;
+void rampClass::setStep(uint16_t stepPeriodMs) {
+  stepPeriod = (float) stepPeriodMs / 1000;
 }
 
 
@@ -60,7 +60,7 @@ void rampClass::start(float duration) {
     rampSteps = (uint16_t) ceil(rampTime / stepPeriod);  // number of FRAME_PERIOD steps in up or down ramp
     holdSteps = 0;  // hold phase has infinite duration after ramp up
   }
-  else {  // finite duration wave and ramp
+  else {  // finite duration ramp
     rampTimeNow = constrain(rampTime, 0, (duration / 2));  // force ramp duration to be no more than 1/2 the total duration
     rampSteps = (uint16_t) ceil(rampTimeNow / stepPeriod);  // number of FRAME_PERIOD steps in up or down ramp
     totalSteps = (uint16_t) ceil(duration / stepPeriod); // total # steps including ramps
@@ -89,7 +89,7 @@ void rampClass::start(float duration, float rampDur) {
 
 
 /* rampClass::step()
-    Called once per FRAME_PERIOD to update effect, if active
+    Called once per step period (frame) to update effect, if active
   Parameters: None
   Returns: None
 */

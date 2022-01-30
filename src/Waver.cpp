@@ -46,9 +46,9 @@ waveClass::waveClass() {
     float stepPerMs: Step duration in integer milliseconds
   Returns: None
 */
-void waveClass::setStep(uint16_t stepPerMs) {
-  stepPeriod = (float) stepPerMs / 1000;
-  ramp.setStep(stepPerMs);
+void waveClass::setStep(uint16_t stepPeriodMs) {
+  stepPeriod = (float) stepPeriodMs / 1000;
+  ramp.setStep(stepPeriodMs);
 }
 
 
@@ -103,7 +103,7 @@ void waveClass::setRamp(float rampDur) {
 
 
 /* waveClass::step() 
-    Called once per FRAME_PERIOD to update effect, if active
+    Called once per setp period (frame) to update effect, if active
   Parameters: None
   Returns: None
 */
@@ -127,7 +127,7 @@ void waveClass::step() {
   Parameters: 
     float offset: Fractional part specifies the phase offset as a fraction of a complete cycle (2π radians). Integer part has no effect
   Returns: 
-    float: Current sine wave value at the specified phase offset, in the range (-amplitude to +amplitude)
+    float: Current sine wave value at the specified phase offset, in the range (0 to amplitude)
 */
 float waveClass::val(float offset) {
   float retVal;

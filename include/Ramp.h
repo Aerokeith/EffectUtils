@@ -21,7 +21,7 @@ public:
   void start(float duration, float rampDur);
   void setRamp(float rampTime);
   void step();
-  void setStep(uint16_t stepPerMs);
+  void setStep(uint16_t stepPeriodMs);
 };
 
 #endif  // _RAMP_TYPES

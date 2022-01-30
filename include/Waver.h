@@ -22,7 +22,7 @@ public:
   void step();
   float val(float offset);  // value of wave function (0 - amplitude) at specified offset (fraction of wavelength)
   float val();  // value of wave function (0 - amplitude) at wave origin
-  void setStep(uint16_t stepPerMs);
+  void setStep(uint16_t stepPeriodMs);
 };
 
 #endif  // _WAVE_TYPES

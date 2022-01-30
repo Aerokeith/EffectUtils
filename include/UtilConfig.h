@@ -1,0 +1,1 @@
+#define STEP_PERIOD 0.01  // step period for all effects
