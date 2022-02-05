@@ -3,11 +3,10 @@
     The class variable val is used to access the current ramp function value, which is 0 at the ramp start, 1 during the hold phase, and 0
     again at the end of the ramp-down. The ramp value is typically used to scale the output of some other effect, to provide a smooth 
     transition into and out of the effect.
-    The setStep() function must be called prior to the first call to start() to configure the duration of each ramp step. 
     The ramp-up/down durations (for all subsequent ramps) can be set using setRamp() or using one of the overloaded start() functions. 
 */
 #include <Arduino.h>
-#include "UtilConfig.h"
+#include "MotionUtils.h"
 #include "Ramp.h"
 
 
@@ -42,18 +41,17 @@ void rampClass::setRamp(float rampDur) {
   Returns: None
 */
 void rampClass::start(float duration) {
-  uint16_t totalSteps;  // number of FRAME_PERIOD steps
   float rampTimeNow;    // potentially-constrained ramp time for this start instance
 
   if (duration == 0) {  // if ramp has infinite duration
-    rampSteps = (uint16_t) ceil(rampTime / STEP_PERIOD);  // number of STEP_PERIOD steps in up or down ramp
+    rampSteps = ComputeSteps(rampTime);  // number of steps in up or down ramp
     holdSteps = 0;  // hold phase has infinite duration after ramp up
   }
   else {  // finite duration ramp
     rampTimeNow = constrain(rampTime, 0, (duration / 2));  // force ramp duration to be no more than 1/2 the total duration
-    rampSteps = (uint16_t) ceil(rampTimeNow / STEP_PERIOD);  // number of STEP_PERIOD steps in up or down ramp
-    totalSteps = (uint16_t) ceil(duration / STEP_PERIOD); // total # steps including ramps
-    holdSteps = max((totalSteps - (2 * rampSteps)), 1); // remaining duration is hold period (ensure at least one hold step)
+    rampSteps = ComputeSteps(rampTimeNow); // number of STEP_PERIOD steps in up or down ramp
+    effectSteps = ComputeSteps(duration); // total # steps including ramps
+    holdSteps = max((effectSteps - (2 * rampSteps)), 1); // remaining duration is hold period (ensure at least one hold step)
   }
   phase = ((rampSteps == 0) ? hold : rampUp); // start in rampUp phase unless no ramp steps
   stepNum = 0;

@@ -19,24 +19,13 @@
     The waveClass object also includes a rampClass object that is optionally used to further scale the sine wave output. The ramp total 
     duration is automatically set to the same duration as the wave, although the ramp-up and ramp-down durations must be separately 
     configured with waveClass::setRamp().
-
-    The step() function must be called once per effect step period, which is defined by the global STEP_PERIOD value in UtilConfig.h 
 */
 #include <Arduino.h>
-#include "UtilConfig.h"
+#include "MotionUtils.h"
 #include "Waver.h"
 
 
 //char wvstr[80]; // DEBUG
-
-/* waveClass::waveClass()
-    Object constructor
-  Parameters: None
-  Returns: None
-*/
-waveClass::waveClass() {
-  active = false;   
-}
 
 
 /* waveClass::start()
@@ -50,11 +39,11 @@ waveClass::waveClass() {
 void waveClass::start(float duration, float frequency, float ampl) {
   amplitude = constrain(ampl, 0, 1);  // make sure parameter is in legal range
   if (duration == 0)  // if infinite duration
-    waveSteps = 0;    // signal to step()
+    effectSteps = 0;    // signal to step()
   else
-    waveSteps = (uint16_t) ceil(duration / STEP_PERIOD);  // total number of steps in wave effect
+    effectSteps = ComputeSteps(duration);  // total number of steps in wave effect
       // angle change per step; Negative angle delta makes travelling wave move in "positive" direction
-  phaseDelta = -(TWO_PI * frequency * STEP_PERIOD);
+  phaseDelta = -(TWO_PI * frequency * stepPeriod);
   phaseAngle = -(TWO_PI / 4); // sin(-π/s) is minimum point of wave, which results in val() = 0
   stepNum = 0;
   active = true;
@@ -98,9 +87,9 @@ void waveClass::step() {
   if (active) {
     phaseAngle += phaseDelta;
     ramp.step();  // update ramp function (if active)
-    if (waveSteps > 0) {  // if finite duration
+    if (effectSteps > 0) {  // if finite duration
       stepNum++;
-      if (stepNum >= waveSteps) // duration is over
+      if (stepNum >= effectSteps) // duration is over
         active = false;
     }
   }

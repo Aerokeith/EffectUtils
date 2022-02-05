@@ -1,1 +1,0 @@
-#define STEP_PERIOD 0.01  // step period for all effects. Should be set to system frame period at which step() functions will be called
