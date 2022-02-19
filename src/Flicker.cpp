@@ -1,3 +1,12 @@
+/* FLICKER.CPP
+    This module defines flickerClass, which implements a filtered random-step effect that can be used to simulate flame/flicker-type
+    effects. The current value of the flicker function is accessed with the flickerClass:val() function, which ranges from 0 to 1.0. 
+    The flicker is applied at a constant (specified) frequency where target flicker output level is randomly chosen for each cycle.
+    A specified filter value constrains the maximum per-cycle change from the current level in the direction of the new target level,
+    enabling control over the "smoothness" of the flciker effect. The flickerClass::val() can be used to modulate the brightness of 
+    one or more LEDs, or can be used to control the number of consecutive LEDs in a strip are turned on. The flicker effect includes
+    an embedded ramp function that can be used to fade in/out the flicker effect. 
+*/
 #include <Arduino.h>
 #include "EffectUtils.h"
 #include "Flicker.h"
