@@ -5,7 +5,6 @@
 
 const float defaultStepPeriod = 0.01;   // default, overridden by call to SetStepPeriod()
 
-
 /*
   A "core" class for the entire EffectUtils library, containing common data members and functions to be used by all derived classes
 */
