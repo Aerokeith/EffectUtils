@@ -1,3 +1,10 @@
+/* FADE.CPP
+  This module defines the fadeClass, which implements a linear fade between two specified colors over a specified duration. The current
+  fade value is available in the class variable curColor, of type hsiF defined in ColorUtils.h. If the initial color is "off" 
+  (startColor.i == 0), the hue and saturation values of startColor are forced to be the same as targetColor, so that the fade-in is in
+  brightness only. Similarly, if the target color is "off" (targetColor.i == 0), the hue and saturation values of targetColor are forced
+  to be the same as startColor, so that the fade-out is in brightness only. 
+*/
 #include <Arduino.h>
 #include "EffectUtils.h"
 #include "Fade.h"

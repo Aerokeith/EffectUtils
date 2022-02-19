@@ -7,7 +7,7 @@
 #define _FADE_TYPES
 
 
-class fadeClass : effect {
+class fadeClass : public effect {
   hsiF endColor;    // target color at end of fade duration
   hsiF delta;       // color change per fade step
 public:

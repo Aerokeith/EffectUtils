@@ -5,7 +5,7 @@
 #ifndef _WAVE_TYPES  // prevent duplicate type definitions when this file is included in multiple places
 #define _WAVE_TYPES
 
-class waveClass : effect {    // derived from "effect" class defined in EffectUtils.h
+class waveClass : public effect {    // derived from "effect" class defined in EffectUtils.h
   float amplitude;      // maximum amplitude of sine wave (0 - 1)
   float phaseAngle;      // current sine wave phase angle at wave "origin"
   float phaseDelta;      // phase angle change per step

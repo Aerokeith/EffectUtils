@@ -5,7 +5,7 @@
 #ifndef _FLICK_TYPES  // prevent duplicate type definitions when this file is included in multiple places
 #define _FLICK_TYPES
 
-class flickerClass : effect {   // derived from "effect" class defined in EffectUtils.h
+class flickerClass : public effect {   // derived from "effect" class defined in EffectUtils.h
   uint16_t cycleSteps;    // number of steps in each flicker cycle
   uint16_t cycleStepNum;  // step number in a cycle
   rampClass ramp;       // embedded ramp function

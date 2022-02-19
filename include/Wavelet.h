@@ -16,7 +16,7 @@ struct waveletStruct {
   float length;     // wavelet wavelength
 };
 
-class waveletClass : effect {   // derived from "effect" class
+class waveletClass : public effect {   // derived from "effect" class
   float distance;     // travel distance of wavelets (mm)
   float maxVelocity;  // maximum velocity for all wavelets (mm/step)
   float acceleration; // acceleration for all wavelets (mm/step/step)

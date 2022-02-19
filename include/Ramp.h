@@ -6,7 +6,7 @@
 
 enum phaseEnum {rampUp, hold, rampDown};
 
-class rampClass : effect {    // derived from base class "effect" defined in EffectUtils.h
+class rampClass : public effect {    // derived from base class "effect" defined in EffectUtils.h
   float rampTime;       // nominal ramp duration as set by start() or setRamp()
   uint16_t rampSteps;   // number of FRAME_PERIOD steps in each up or down ramp (may be reduced based on total duration)
   uint16_t holdSteps;   // number of steps in hold period
