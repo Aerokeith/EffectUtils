@@ -8,7 +8,7 @@
 */
 
 #include <Arduino.h>
-#include "MotionUtils.h"
+#include "EffectUtils.h"
 #include "Wavelet.h"
 
 //char vstr[80];  // DEBUG

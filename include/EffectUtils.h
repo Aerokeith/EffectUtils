@@ -1,15 +1,15 @@
 #include <Arduino.h>
 
-#ifndef _MOTION_TYPES
-#define _MOTION_TYPES
+#ifndef _EFFECT_UTIL_TYPES
+#define _EFFECT_UTIL_TYPES
 
 const float defaultStepPeriod = 0.01;   // default, overridden by call to SetStepPeriod()
 
 
 /*
-  A "core" class for the entire MotionUtils library, containing common data members and functions to be used by all derived classes
+  A "core" class for the entire EffectUtils library, containing common data members and functions to be used by all derived classes
 */
-class motion {
+class effect {
 public:
   static float stepPeriod;    // duration of each effect step
   bool active;                // true during the specified duration of the effect
@@ -21,4 +21,4 @@ public:
   static void SetStepPeriod(uint8_t periodMs) { stepPeriod = (float) periodMs / 1000; }
 };
 
-#endif  // _MOTION_TYPES
+#endif  // _EFFECT_UTIL_TYPES

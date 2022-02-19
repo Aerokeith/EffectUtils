@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "MotionUtils.h"
+#include "EffectUtils.h"
 #include "Flicker.h"
 
 //char fstr[80];  // DEBUG
@@ -9,11 +9,11 @@
     Sets the duration of the embedded ramp function (set Ramp.cpp) that is used to gradually increase, hold, and then decrease
     the flicker effect output (based on flickVal) over the duration of the effect.
   Parameters: 
-    float rampTime: duration of each of the ramp-up and ramp-down phases (seconds)
+    float rampDur: duration of each of the ramp-up and ramp-down phases (seconds)
   Returns: None
 */
-void flickerClass::setRamp(float rampTime) {
-  ramp.setRamp(rampTime);
+void flickerClass::setRamp(float rampDur) {
+  ramp.setRamp(rampDur);
 }
 
 

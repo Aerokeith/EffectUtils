@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "MotionUtils.h"
+#include "EffectUtils.h"
 
 #ifndef _WAVELET_TYPES
 #define _WAVELET_TYPES
@@ -16,7 +16,7 @@ struct waveletStruct {
   float length;     // wavelet wavelength
 };
 
-class waveletClass : motion {   // derived from "motion" class
+class waveletClass : effect {   // derived from "effect" class
   float distance;     // travel distance of wavelets (mm)
   float maxVelocity;  // maximum velocity for all wavelets (mm/step)
   float acceleration; // acceleration for all wavelets (mm/step/step)

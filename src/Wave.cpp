@@ -1,4 +1,4 @@
-/* WAVER.CPP
+/* WAVE.CPP
     The waveClass defined in this module implements a single sine wave function that can be configured using two diferent methods. 
     The first method specifies a duration, (seconds), frequency (Hz) and maximum amplitude (between 0 and 1). The second method is 
     equivalent, but for convenience defines the sine frequency in terms of wavelength (mm) and speed (mm/sec); i.e. 
@@ -14,18 +14,16 @@
     Another example is a "travelling wave" effect used to modulate a strip of equally-spaced LEDs with a sine wave that appears to move
     down the strip. In this case the wavelength and speed are defined based on the LED spacing and the desired dimensions of the effect. 
     For each frame, the sine value for each LED is obtained using a phase angle offset that is based on the LEDs position (relative to an
-    arbitrary origin point) as a fraction of the sine wavelength. 
+    arbitrary origin point) as a fraction of the sine wavelength (0 - 1).
 
-    The waveClass object also includes a rampClass object that is optionally used to further scale the sine wave output. The ramp total 
-    duration is automatically set to the same duration as the wave, although the ramp-up and ramp-down durations must be separately 
-    configured with waveClass::setRamp().
+    The waveClass object also includes a rampClass object that is optionally used to further scale the sine wave output. The ramp effect 
+    total duration (ramp-up, hold, ramp-down) is automatically set to the same duration as the wave, although the ramp-up and ramp-down 
+    durations must be separately configured with waveClass::setRamp(). If not configured, by default the ramp-up and ramp-down durations
+    will each be set to half the duration of the effect (i.e. no hold phase). 
 */
 #include <Arduino.h>
-#include "MotionUtils.h"
-#include "Waver.h"
-
-
-//char wvstr[80]; // DEBUG
+#include "EffectUtils.h"
+#include "Wave.h"
 
 
 /* waveClass::start()
