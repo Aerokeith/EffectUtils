@@ -11,8 +11,6 @@
 #include "EffectUtils.h"
 #include "Flicker.h"
 
-//char fstr[80];  // DEBUG
-
 
 /* setRamp()
     Sets the duration of the embedded ramp function (set Ramp.cpp) that is used to gradually increase, hold, and then decrease
