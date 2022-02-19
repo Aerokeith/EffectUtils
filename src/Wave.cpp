@@ -18,8 +18,7 @@
 
     The waveClass object also includes a rampClass object that is optionally used to further scale the sine wave output. The ramp effect 
     total duration (ramp-up, hold, ramp-down) is automatically set to the same duration as the wave, although the ramp-up and ramp-down 
-    durations must be separately configured with waveClass::setRamp(). If not configured, by default the ramp-up and ramp-down durations
-    will each be set to half the duration of the effect (i.e. no hold phase). 
+    durations must be separately configured with waveClass::setRamp(). 
 */
 #include <Arduino.h>
 #include "EffectUtils.h"

@@ -14,7 +14,7 @@ class rampClass : effect {    // derived from base class "effect" defined in Eff
   float rampDelta;      // added to val each ramp step
 public:
   float val;      // current output value of ramp function (0 - 1)
-  rampClass();
+  rampClass() { rampTime = 0; active = false; }
   void start(float duration);
   void start(float duration, float rampDur);
   void setRamp(float rampDur);

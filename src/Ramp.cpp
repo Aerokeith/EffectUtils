@@ -10,17 +10,6 @@
 #include "Ramp.h"
 
 
-/* rampClass::rampClass()
-    Object constructor
-  Parameters: None
-  Returns: None
-*/
-rampClass::rampClass() {
-  rampTime = 0;   // default is no ramp until explicitly set by setRamp() or start()
-  active = false;
-}
-
-
 /* rampClass::setRamp()
     Sets the duration of each of the ramp-up and ramp-down phases of the trapezoidal ramp function to be applied
     in subsequent calls to rampClass::start(), unless the ramp duration is set in the call to start()
