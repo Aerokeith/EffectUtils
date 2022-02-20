@@ -10,3 +10,5 @@ Wave: Defines a waveClass that implements a sine wave function that can be used 
 Flicker: Defines a flickerClass that implements a filtered random-step function that can be used to simulate flickering-flame effects
 
 Wavelet: Defines a waveletClass that can be used to "launch" discrete sine wave-shaped "wavelets" over a specified distance, with a target speed and acceleration. Random variations are applied to a specified nominal wavelet length and inter-wavelet delay.
+
+Flow: Defines a flowClass that implements a linear ramp function that "flows" across a specified distance over a specified duration. Used to flow colors into a linear strip of LEDs with a "soft" leading edge defined by the ramp.
