@@ -121,7 +121,7 @@ float waveClass::val(float offset) {
   Parameters: 
     float offset: Fractional part specifies the phase offset as a fraction of a complete cycle (2π radians). Integer part has no effect
   Returns: 
-    float: Current sine wave value at phase offset = 0, in the range (-amplitude to +amplitude)
+    float: Current sine wave value at phase offset = 0, in the range (0 to amplitude)
 */
 float waveClass::val() {
   return (val(0));

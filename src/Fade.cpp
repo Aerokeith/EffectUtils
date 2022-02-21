@@ -21,20 +21,20 @@
 */
 void fadeClass::start(float duration, hsiF *curColor, hsiF targetColor) {
 
-  fadeColor = curColor;   // copy pointer to class data member
-  if (fadeColor->i < 0.1) {     // if LED is currently off (or very close to off)
-    fadeColor->h = targetColor.h;  // then this is a brightness-only fade-in to targetColor
-    fadeColor->s = targetColor.s;
+  fadeColorPtr = curColor;   // copy pointer to class data member
+  if (fadeColorPtr->i < 0.1) {     // if LED is currently off (or very close to off)
+    fadeColorPtr->h = targetColor.h;  // then this is a brightness-only fade-in to targetColor
+    fadeColorPtr->s = targetColor.s;
   }
   else if (targetColor.i < 0.1) {    // if target color is off (or very close to off)
-    targetColor.h = fadeColor->h;  // then this is a brightness-only fade-out
-    targetColor.s = fadeColor->s;
+    targetColor.h = fadeColorPtr->h;  // then this is a brightness-only fade-out
+    targetColor.s = fadeColorPtr->s;
   }
   endColor = targetColor;   
   effectSteps = ComputeSteps(duration);  // total number of steps in fade effect
-  delta.h = HueDistance(fadeColor->h, endColor.h) / effectSteps;  // compute the HSI delta per step
-  delta.s = (endColor.s - fadeColor->s) / effectSteps;
-  delta.i = (endColor.i - fadeColor->i) / effectSteps;
+  delta.h = HueDistance(fadeColorPtr->h, endColor.h) / effectSteps;  // compute the HSI delta per step
+  delta.s = (endColor.s - fadeColorPtr->s) / effectSteps;
+  delta.i = (endColor.i - fadeColorPtr->i) / effectSteps;
   stepNum = 0;
   active = true;
 }
@@ -47,12 +47,12 @@ void fadeClass::start(float duration, hsiF *curColor, hsiF targetColor) {
 */
 void fadeClass::step() {
   if (active) {   // if a fade is currently active (started, not finished)
-    fadeColor->h += delta.h;
-    fadeColor->s += delta.s;
-    fadeColor->i += delta.i;
+    fadeColorPtr->h += delta.h;
+    fadeColorPtr->s += delta.s;
+    fadeColorPtr->i += delta.i;
     stepNum++;
     if (stepNum >= effectSteps) {  // if fade is done
-      *fadeColor = endColor;  // correct any potential rounding errors to ensure color ends up at endColor
+      *fadeColorPtr = endColor;  // correct any potential rounding errors to ensure color ends up at endColor
       active = false;
     }
   }

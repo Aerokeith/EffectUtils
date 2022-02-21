@@ -8,7 +8,7 @@
 
 
 class fadeClass : public effect {
-  hsiF *fadeColor;  // pointer to the color to be faded
+  hsiF *fadeColorPtr;  // pointer to the color to be faded
   hsiF endColor;    // target color at end of fade duration
   hsiF delta;       // color change per fade step
 public:

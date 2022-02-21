@@ -2,7 +2,8 @@
     This module defines the flowClass, which implements a linear ramp function that "flows" across a specified distance over a specified
     duration. The ramp width is also specified, and will typically be less than or equal to the flow distance. 
     The function val() is used to access the amplitude of the ramp at a specified offset from the flow origin. The ramp val() ranges 
-    from 0 to 1, such that val(0) == 0 at time 0 and ramps ups to val(0) == 1 as the upper edge of the rampo reaches the flow origin. 
+    from 0 to 1, such that val(0) == 0 at time 0 and ramps ups to val(0) == 1 as the upper edge of the ramp reaches the flow origin.
+    A completed() function is provided to detect when a flow effect is completed (just became inactive).
 */
 #include <Arduino.h>
 #include "EffectUtils.h"
@@ -23,6 +24,7 @@ void flowClass::start(float duration, float distance, float rampLen) {
   rampWidth = constrain(rampLen, 1, distance);    // ramp width must be > 0 and <= distance
   rampSlope = 1.0f / rampLen;   // = delta-value / delta-distance
   curPos = 0;
+  completedFlag = false;
   stepNum = 0;
   active = true;
 }
@@ -38,6 +40,7 @@ void flowClass::step() {
     curPos += deltaDist;
     stepNum++;
     if (stepNum >= effectSteps) {  // if flow is done
+      completedFlag = true;
       active = false;
     }
 
@@ -61,4 +64,21 @@ float flowClass::val(float offset) {
   }
   else  
     return (0);   // always return 0 if flow not active
+}
+
+
+/* flowClass::completed()
+    Returns true when a previously-active flow effect has become inactive (i.e. just finished). Subsequent calls to completed()
+    return false until a new flow effect is started. 
+    rampSlope. 
+  Parameters: None
+  Returns: 
+    bool: True when a previously-active flow effect has become inactive (i.e. just finished).
+*/
+bool flowClass::completed() {
+  bool retVal;
+
+  retVal = completedFlag;
+  completedFlag = false;
+  return retVal;
 }
