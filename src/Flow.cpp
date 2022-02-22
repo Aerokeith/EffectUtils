@@ -20,9 +20,9 @@
 */
 void flowClass::start(float duration, float distance, float rampLen) {
   effectSteps = ComputeSteps(duration);  // total number of steps in fade effect
-  deltaDist = distance / (float) effectSteps;   // compute "speed" of flow leading edge
+  deltaDist = distance / (float) effectSteps;   // compute "speed" of flow leading edge (mm/step)
   rampWidth = constrain(rampLen, 1, distance);    // ramp width must be > 0 and <= distance
-  rampSlope = 1.0f / rampLen;   // = delta-value / delta-distance
+  rampSlope = (float) 1.0 / rampLen;   // = delta-value / delta-distance
   curPos = 0;
   completedFlag = false;
   stepNum = 0;
@@ -50,20 +50,23 @@ void flowClass::step() {
 
 /* flowClass::val()
     Returns the value of the flow (linear ramp) function (in range 0 - 1) at a specified offset from the flow origin, in the direction 
-    of the flow. A negative offset return a 0 value. An offset >= rampWidth return 1. Offsets in between will return a value based on
+    of the flow. A negative offset returns a 0 value. An offset >= rampWidth return 1. Offsets in between will return a value based on
     rampSlope. 
   Parameters: 
     float offset: Position (in mm) relative to the origin and direction of the flow. 
   Returns: None
 */
 float flowClass::val(float offset) {
-  if ((active) && (offset >= 0)) {  
-    if (offset >= rampWidth)
+  float rampPos;
+
+  if (!active)
+    return (0.0f);
+  rampPos = curPos - offset;  // find distance from start of ramp to specified offset
+  if ((rampPos <= 0) || (offset < 0))   // if the ramp hasn't reached the offset position
+    return (0.0f);
+  if (rampPos >= rampWidth)   // if the ramp has fully passed the offset position
       return (1.0f);
-    return (offset * rampSlope);
-  }
-  else  
-    return (0);   // always return 0 if flow not active
+  return (rampPos * rampSlope);   // offset is somewhere inside the ramp
 }
 
 

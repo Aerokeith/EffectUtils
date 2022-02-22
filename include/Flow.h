@@ -7,10 +7,10 @@
 
 
 class flowClass : public effect {
-  float deltaDist;  // flow distance per step
+  float deltaDist;  // flow distance per step (mm)
   float rampSlope;  // slope of ramp (delta-value per mm)
-  float curPos;   // current position of flow leading edge
-  float rampWidth; // distance from flow leading edge to top of ramp
+  float curPos;   // current position of flow leading edge (mm)
+  float rampWidth; // distance from flow leading edge to top of ramp (mm)
   bool completedFlag;  // becomes true when flow is completed
 public:
   flowClass() { active = false; completedFlag = false; }
