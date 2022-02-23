@@ -17,7 +17,7 @@ public:
     // Compute the number of effect steps in the specified duration
   uint16_t ComputeSteps(float duration) { return (uint16_t) ceil(duration / stepPeriod); } 
     // Set the step period, which will be propagated to all derived classes/objects
-  static void SetStepPeriod(uint8_t periodMs) { stepPeriod = (float) periodMs / 1000; }
+  static void SetStepPeriod(uint32_t periodMs) { stepPeriod = (float) periodMs / 1000; }
 };
 
 #endif  // _EFFECT_UTIL_TYPES
