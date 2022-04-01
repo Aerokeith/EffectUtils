@@ -14,7 +14,7 @@ float effect::stepPeriod = defaultStepPeriod;
       uint16_t: Number of stepPeriod steps in duration. Returns 0 if (duration == 0); otherwise return value is >= 1
 */
 uint16_t effect::ComputeSteps(float duration) { 
-  if (duration == 0) 
+  if (duration < 0.01)  // if duration is very close to 0
     return 0; 
   else
     return (uint16_t) ceil(duration / stepPeriod); 
