@@ -15,7 +15,7 @@ public:
   uint16_t stepNum;           // current step number
   uint16_t effectSteps;       // total number of steps in the specified effect duration
     // Compute the number of effect steps in the specified duration
-  uint16_t ComputeSteps(float duration) { return (uint16_t) ceil(duration / stepPeriod); } 
+  uint16_t ComputeSteps(float duration); 
     // Set the step period, which will be propagated to all derived classes/objects
   static void SetStepPeriod(uint32_t periodMs) { stepPeriod = (float) periodMs / 1000; }
 };
