@@ -31,7 +31,7 @@ class waveletClass : public effect {   // derived from "effect" class
   void launch();
   float randomVar(float nomVal, float maxVar);
 public:
-  waveletClass() {active = false; lengthVar = WAVELET_DELAY_VAR; delayVar = WAVELET_DELAY_VAR; }
+  waveletClass() {active = false; lengthVar = WAVELET_LENGTH_VAR; delayVar = WAVELET_DELAY_VAR; }
   void start(float duration, float dist, float speed, float accel, float len, float delay);
   void step();
   float val(float pos);

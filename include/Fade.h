@@ -12,9 +12,10 @@ class fadeClass : public effect {
   hsiF endColor;    // target color at end of fade duration
   hsiF delta;       // color change per fade step
 public:
-  fadeClass() { active = false; }
+  fadeClass() { init(); }
   void start(float duration, hsiF *curColor, hsiF targetColor);
   void step();
+  void init() { active = false;}
 };
 
 #endif  // _FADE_TYPES
