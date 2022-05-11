@@ -38,7 +38,7 @@ void waveletClass::start(float duration, float dist, float speed, float accel, f
   stepNum = 0;
   nextWvl = 0;  // prepare to launch wavelet 0
   lastWvl = 0;  // (lastWvl == nextWvl) means no wavelets launched yet
-  launchStep = 0; // launch first wavelet with no delay
+  launchCounter = 0; // launch first wavelet with no delay
   active = true;
 }
 
@@ -62,10 +62,12 @@ void waveletClass::step() {
         }
       }
     }
-    if (stepNum >= launchStep) { // if it's time to launch a new wavelet
+    if (launchCounter > 0) 
+      launchCounter--;      // count down until next launch
+    else {    // if it's time to launch a new wavelet
       launch();
-        // compute time (step) for next launch
-      launchStep = stepNum + (uint16_t) (randomVar(nomDelay, delayVar) / stepPeriod);
+        // compute # of steps until next launch
+      launchCounter = (uint16_t) (randomVar(nomDelay, delayVar) / stepPeriod);
     } 
     if (effectSteps > 0) {    // if finite effect duration
       stepNum++;

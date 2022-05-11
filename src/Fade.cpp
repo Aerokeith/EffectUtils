@@ -48,6 +48,10 @@ void fadeClass::start(float duration, hsiF *curColor, hsiF targetColor) {
 void fadeClass::step() {
   if (active) {   // if a fade is currently active (started, not finished)
     fadeColorPtr->h += delta.h;
+    if (fadeColorPtr->h > 1.0)  // handle wrap conditions
+      fadeColorPtr->h -= 1.0;
+    else if (fadeColorPtr->h < 0)
+      fadeColorPtr->h += 1.0;
     fadeColorPtr->s += delta.s;
     fadeColorPtr->i += delta.i;
     stepNum++;

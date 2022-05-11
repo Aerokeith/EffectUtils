@@ -24,7 +24,7 @@ class waveletClass : public effect {   // derived from "effect" class
   float lengthVar;      // random variation (+/-) in wavelet length as a fraction of nomLength
   float nomDelay;     // nominal delay between successive wavelet launches
   float delayVar;     // random variation (+/-) in inter-wavelet delay as a fraction of nomDelay
-  uint16_t launchStep;  // value of stepNum at which to launch next wavelet
+  uint16_t launchCounter;   // count down steps until next wavelet launch
   uint8_t nextWvl;    // number of next wavelet to be launched
   uint8_t lastWvl;    //number of last (previous) wavelet launched
   waveletStruct wvl[WAVELETS_MAX_NUM];  // array of per-wavelet structures
