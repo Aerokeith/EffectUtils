@@ -20,4 +20,5 @@ public:
   static void SetStepPeriod(uint32_t periodMs) { stepPeriod = (float) periodMs / 1000; }
 };
 
+
 #endif  // _EFFECT_UTIL_TYPES

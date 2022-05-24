@@ -17,6 +17,7 @@ public:
   void start(float duration, float wavelen, float speed, float ampl);
   void setRamp(float rampDur);
   void step();
+  float value(float position);  // value of wave function (-amplitude to +amplitude) at specified offset from origin (mm)
   float val(float offset);  // value of wave function (0 - amplitude) at specified offset (fraction of wavelength)
   float val();  // value of wave function (0 - amplitude) at wave origin
 };

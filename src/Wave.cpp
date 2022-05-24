@@ -2,10 +2,16 @@
     The waveClass defined in this module implements a single sine wave function that can be configured using two diferent methods. 
     The first method specifies a duration, (seconds), frequency (Hz) and maximum amplitude (between 0 and 1). The second method is 
     equivalent, but for convenience defines the sine frequency in terms of wavelength (mm) and speed (mm/sec); i.e. 
-    frequency = speed/wavelength. Once started, the sine wave is available using the val() function, where the return value is in 
-    the range 0 to <amplitude>. The overload function val(offset) can also be used, where offset (0 to 1) specifies a phase angle 
-    offset as a fraction of a complete cycle (2*π radians). Note that val(0) and val(1) will return the same value when called during 
-    the same step (frame), since they both translate to the same phase angle offset.  
+    frequency = speed/wavelength. 
+    
+    The "origin" of the wave is at position x = 0. The value(position) function is used to evaluate the wave at any position (in mm) 
+    where position >= 0, and the returned value is in the range -ampltude to +amplitude. 
+
+    For backward compatibility, two additional methods are available to access the sine wave value. Once started, the sine wave is 
+    available using the val() function, where the return value is in the range 0 to <amplitude> (always positive). The overload function
+     val(offset) can also be used, where offset (0 to 1) specifies a phase angle offset as a fraction of a complete cycle (2*π radians). 
+     Note that val(0) and val(1) will return the same value when called during the same step (frame), since they both translate to the
+     same phase angle offset.  
 
     For example, a "shimmer" function involving N LEDs can be implemented using a single waveClass object. Each LED is assigned a random
     offset value that is used in each subsequent call to val(offset). The returned sine value is used to modulate the brightness of each
@@ -91,6 +97,30 @@ void waveClass::step() {
     }
   }
 }
+
+
+/* waveClass::value() 
+    Returns the current wave value (amplitude-scaled) at the specified distance from the wave origin, also scaled by the 
+    embedded ramp function. A value of 0 will be returned prior to the first call to waveClass::step().
+    The ramp will have no effect unless waveClass::setRamp() is used to set a non-zero ramp-up/down duration.
+  Parameters: 
+    float position: Distance (mm) from the wave origin (x = 0)
+  Returns: 
+    float: Current wave value at the specified position (distaqnce from origin), in the range (-amplitude to +amplitude)
+*/
+float waveClass::value(float position) {
+  float retVal;
+
+  if (active) {
+      // shift sin up to range 0 - 2, then scale to range 0 - 1, then scale by amplitude
+    retVal = sin(phaseAngle + (TWO_PI * (position / waveLength))) * amplitude;
+    retVal *= ramp.val; // scale by current ramp function value
+    return (retVal);
+  }
+  else
+    return (0);   // wave output is always 0 when inactive
+}
+
 
 
 /* waveClass::val() 

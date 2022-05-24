@@ -50,8 +50,8 @@ void flowClass::step() {
 
 /* flowClass::val()
     Returns the value of the flow (linear ramp) function (in range 0 - 1) at a specified offset from the flow origin, in the direction 
-    of the flow. A negative offset returns a 0 value. An offset >= rampWidth return 1. Offsets in between will return a value based on
-    rampSlope. 
+    of the flow. If the offset is greater than the current position of the ramp leading edge, a value of 0 is returned. If the offset
+    if less than or equal to the position of the leading edge, a value of between 0 and 1 is returned. 
   Parameters: 
     float offset: Position (in mm) relative to the origin and direction of the flow. 
   Returns: None
