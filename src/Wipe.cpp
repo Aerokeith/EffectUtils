@@ -50,7 +50,6 @@ void wipeClass::step() {
       completedFlag = true;
       active = false;
     }
-
   }
 }
 
