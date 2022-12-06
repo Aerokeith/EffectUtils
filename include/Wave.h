@@ -15,6 +15,8 @@ public:
   waveClass() { active = false; }   // object constructor
   void start(float duration, float frequency, float ampl);
   void start(float duration, float wavelen, float speed, float ampl);
+  void setFrequency(float frequency);
+  void setAmplitude(float ampl);
   void setRamp(float rampDur);
   void step();
   float value(float position);  // value of wave function (-amplitude to +amplitude) at specified offset from origin (mm)

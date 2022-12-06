@@ -2,7 +2,7 @@
     The waveClass defined in this module implements a single sine wave function that can be configured using two diferent methods. 
     The first method specifies a duration, (seconds), frequency (Hz) and maximum amplitude (between 0 and 1). The second method is 
     equivalent, but for convenience defines the sine frequency in terms of wavelength (mm) and speed (mm/sec); i.e. 
-    frequency = speed/wavelength. 
+    frequency = speed/wavelength. This is called a travelling wave. 
     
     The "origin" of the wave is at position x = 0. The value(position) function is used to evaluate the wave at any position (in mm) 
     where position >= 0, and the returned value is in the range -ampltude to +amplitude. 
@@ -25,6 +25,9 @@
     The waveClass object also includes a rampClass object that is optionally used to further scale the sine wave output. The ramp effect 
     total duration (ramp-up, hold, ramp-down) is automatically set to the same duration as the wave, although the ramp-up and ramp-down 
     durations must be separately configured with waveClass::setRamp(). 
+
+    The waveClass::setAmplitude and waveClass::setFrequency methods are provided to allow these wave parameters to be changed dynamically
+    while the effect is active. 
 */
 #include <Arduino.h>
 #include "EffectUtils.h"
@@ -36,18 +39,19 @@
   Parameters:
     float duration: Total duration of the effect (in seconds). Duration = 0 results in an infinite (non-terminating) effect
     float frequency: Sine wave frequency (in Hz). Can be positive or negative
-    float ampl: Defines the maximum output of the val() function
+    float ampl: Defines the maximum absolute value of the val() function (+/-)
   Returns: None
 */
 void waveClass::start(float duration, float frequency, float ampl) {
-  amplitude = constrain(ampl, 0, 1);  // make sure parameter is in legal range
   if (duration == 0)  // if infinite duration
     effectSteps = 0;    // signal to step()
   else
     effectSteps = ComputeSteps(duration);  // total number of steps in wave effect
       // angle change per step; Negative angle delta makes travelling wave move in "positive" direction
-  phaseDelta = -(TWO_PI * frequency * stepPeriod);
-  phaseAngle = -(TWO_PI / 4); // sin(-π/s) is minimum point of wave, which results in val() = 0
+  setAmplitude(ampl);
+  setFrequency(frequency);
+  if (!active)  // if wave is already active, don't reset phaseAngle (avoids discontinuity)
+    phaseAngle = -(TWO_PI / 4); // sin(-π/s) is minimum point of wave, which results in val() = 0
   stepNum = 0;
   active = true;
   ramp.start(duration);   // start ramp with same duration
@@ -78,6 +82,29 @@ void waveClass::start(float duration, float wavelen, float speed, float ampl) {
 */
 void waveClass::setRamp(float rampDur) {
   ramp.setRamp(rampDur);
+}
+
+
+/* waveClass::setFrequency() 
+    Sets the phaseDelta class variable. May be called while the effect is active. Note that phaseDelta is negative, causing the 
+    travelling sine wave to move in the positive direction.
+  Parameters:
+    float frequency: Sine wave frequency (in Hz)
+  Returns: None
+*/
+void waveClass::setFrequency(float frequency) {
+  phaseDelta = -(TWO_PI * frequency * stepPeriod);
+}
+
+
+/* waveClass::setAmplitude() 
+    Sets the amplitude class variable. May be called while the effect is active
+  Parameters:
+    float ampl: Defines the maximum absolute value of the val() function (+/-)
+  Returns: None
+*/
+void waveClass::setAmplitude(float ampl) {
+  amplitude = constrain(ampl, 0, 1);  // make sure parameter is in legal range
 }
 
 

@@ -14,6 +14,7 @@ class fadeClass : public effect {
 public:
   fadeClass() { init(); }
   void start(float duration, hsiF *curColor, hsiF targetColor);
+  void start(float duration, hsiF *curColor, hsiF targetColor, bool useShortestDist, bool positiveDir);
   void step();
   void init() { active = false;}
 };

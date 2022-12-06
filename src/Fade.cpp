@@ -17,9 +17,12 @@
     float duration: Total duration of the effect (in seconds). 
     hsiF *curColor: Pointer to the color value to be faded
     hsiF targetColor: The desired color at the end of the fade duration
+    bool useShortestDist: If true, the fade will occur based on the shortest distance between the hues of targetColor and *curColor,
+      with wrap-around if necessary. If false, the fade will be performed in the hue direction specified by positiveDir
+    bool positiveDir: If true, the fade will be performed in the positive hue direction, with wrap-around if necessary
   Returns: None
 */
-void fadeClass::start(float duration, hsiF *curColor, hsiF targetColor) {
+void fadeClass::start(float duration, hsiF *curColor, hsiF targetColor, bool useShortestDist, bool positiveDir) {
 
   fadeColorPtr = curColor;   // copy pointer to class data member
   if (fadeColorPtr->i < 0.1) {     // if LED is currently off (or very close to off)
@@ -32,11 +35,24 @@ void fadeClass::start(float duration, hsiF *curColor, hsiF targetColor) {
   }
   endColor = targetColor;   
   effectSteps = ComputeSteps(duration);  // total number of steps in fade effect
-  delta.h = HueDistance(fadeColorPtr->h, endColor.h) / effectSteps;  // compute the HSI delta per step
+  delta.h = HueDistance(fadeColorPtr->h, endColor.h, useShortestDist, positiveDir) / effectSteps;  // compute the HSI delta per step
   delta.s = (endColor.s - fadeColorPtr->s) / effectSteps;
   delta.i = (endColor.i - fadeColorPtr->i) / effectSteps;
   stepNum = 0;
   active = true;
+}
+
+
+/* fadeClass::start()
+    Overload of start(), omitting the useShortestDist amd positiveDir parameters for backward compatibility.
+  Parameters:
+    float duration: Total duration of the effect (in seconds). 
+    hsiF *curColor: Pointer to the color value to be faded
+    hsiF targetColor: The desired color at the end of the fade duration
+  Returns: None
+*/
+void fadeClass::start(float duration, hsiF *curColor, hsiF targetColor) {
+  start(duration, curColor, targetColor, true, false);
 }
 
 
