@@ -16,9 +16,10 @@ public:
   rampVarClass offsetRamp;    // embedded rampVar object to ramp offset
   rampVarClass amplitudeRamp; // embedded rampVar object to ramp amplitude
   sineClass() { active = false; }   // object constructor
-  void update(float level, float freq, float ampl, float rampDur);
+  void update(float freq, float level,  float ampl, float rampDur);
   void step();
   float value();  // current value of sine wave function
+  float value(float phaseOffsetFrac);  // current value of sine wave function at a specified phase offset
 };
 
 #endif  // _SINE_TYPES

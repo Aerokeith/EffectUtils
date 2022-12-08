@@ -22,7 +22,7 @@
     float rampTime: Duration of ramp from the previous sine wave parameters to the new values specified by the 3 parameters above
   Returns: None
 */
-void sineClass::update(float level, float freq, float ampl, float rampDur) {
+void sineClass::update(float freq, float level, float ampl, float rampDur) {
   if ((!active) || (rampDur == 0)) {  // is sine effect hasn't been started yet, or if parameters have immediate effect
     active = true;
     phaseAngle = 0;
@@ -59,17 +59,32 @@ void sineClass::step() {
 
 
 /* sineClass::value() 
-    Returns the current value of the offset sine wave.
-  Parameters: None
+    Returns the current value of the level-offset sine wave, at a specified phase angle offset. This can be used to obtain the 
+      sine wave value at different positions along a linear fixture.
+  Parameters:
+    float phaseOffsetFrac: Additonal phase angle offset (from sineClass::phaseAngle), specified as a fraction of a complete
+        cycle (0 - 1)
   Returns: 
     float: current offset sine wave value, clipped to the range 0 - 1
 */
-float sineClass::value() {
+float sineClass::value(float phaseOffsetFrac) {
+  float phaseOffset;
+
+  phaseOffset = TWO_PI * phaseOffsetFrac;
   if (active) {
-    return (constrain((sin(phaseAngle) * amplitude) + offset, 0, 1));
+    return (constrain((sin(phaseAngle + phaseOffset) * amplitude) + offset, 0, 1));
   }
   else
     return (0);   // wave output is always 0 when inactive
 }
 
 
+/* sineClass::value() 
+    Returns the current value of the level-offset sine wave, with no phase offset. Overload of function above
+  Parameters: None
+  Returns: 
+    float: current offset sine wave value, clipped to the range 0 - 1
+*/
+float sineClass::value() {
+  return value(0);    // no phase offset
+}
