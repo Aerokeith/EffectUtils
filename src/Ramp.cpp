@@ -11,15 +11,29 @@
 
 
 /* rampClass::setRamp()
-    Sets the duration of each of the ramp-up and ramp-down phases of the trapezoidal ramp function to be applied
-    in subsequent calls to rampClass::start(), unless the ramp duration is set in the call to start()
+    Sets the duration of the ramp-up and ramp-down phases of the trapezoidal ramp function to be applied
+    in subsequent calls to rampClass::start(), unless the ramp durations are set in the call to start()
+  Parameters: 
+    float rampUpDur: duration of the ramp-up phase (seconds)
+    float rampDownDur: duration of the ramp-down phase (seconds)
+  Returns: None
+*/
+void rampClass::setRamp(float rampUpDur, float rampDownDur) {
+  rampUpTime = max(0, rampUpDur);
+  rampDownTime = max(0, rampDownDur);
+}
+
+
+/* rampClass::setRamp() [Overload]
+    Sets the duration of ramp-up and ramp-down phases to the same value
   Parameters: 
     float rampDur: duration of each of the ramp-up and ramp-down phases (seconds)
   Returns: None
 */
 void rampClass::setRamp(float rampDur) {
-  rampTime = abs(rampDur);   // ensure duration is positive
+  setRamp(rampDur, rampDur);
 }
+
 
 
 /* rampClass::start()
@@ -27,24 +41,35 @@ void rampClass::setRamp(float rampDur) {
   Parameters: 
     float duration: Total duration of the ramp function, including all three phases (ramp-up, hold, ramp-down).
                     Duration = 0 specifies a ramp-up phase followed by an infinite-duration hold phase
+    float rampUpDur: Duration of the ramp-up phase (seconds). Overrides the value in any previous call to setRamp()
+    float rampDownDur: Duration of the ramp-down phase (seconds). Overrides the value in any previous call to setRamp()
   Returns: None
 */
-void rampClass::start(float duration) {
-  float rampTimeNow;    // potentially-constrained ramp time for this start instance
+void rampClass::start(float duration, float rampUpDur, float rampDownDur) {
+  float rampTime;    // potentially-constrained ramp time for this start instance
 
+  setRamp(rampUpDur, rampDownDur);    // set new values for rampClass::rampUpTime and rampClass::rampDownTime
   if (duration == 0) {  // if ramp has infinite duration
-    rampSteps = ComputeSteps(rampTime);  // number of steps in ramp-up
+    rampUpSteps = ComputeSteps(rampUpTime);  // number of steps in ramp-up
     holdSteps = 0;  // hold phase has infinite duration after ramp up
   }
   else {  // finite duration ramp
-    rampTimeNow = constrain(rampTime, 0, (duration / 2));  // force ramp duration to be no more than 1/2 the total duration
-    rampSteps = ComputeSteps(rampTimeNow); // number of STEP_PERIOD steps in up or down ramp
-    effectSteps = ComputeSteps(duration); // total # steps including ramps
-    holdSteps = max((effectSteps - (2 * rampSteps)), 1); // remaining duration is hold period (ensure at least one hold step)
+    if (duration < (rampUpTime + rampDownTime)) {   // if duration is to short to accommodate full ramp-up/down
+        // compute time at intersection of up and down ramps, constrained by total duration
+      rampTime = ((-1/rampDownTime) * duration) / ((-1/rampDownTime) - (1/rampUpTime));
+      rampUpSteps = ComputeSteps(rampTime); 
+      rampDownSteps = ComputeSteps(duration - rampTime);  // remaining time used for down ramp
+      holdSteps = 0;
+    }
+    else {  // diration is long enough to accommodate full ramp up/down
+      rampUpSteps = ComputeSteps(rampUpTime);
+      rampDownSteps = ComputeSteps(rampDownTime);
+      holdSteps = ComputeSteps(duration - rampUpTime - rampDownTime);
+    }
   }
-  phase = ((rampSteps == 0) ? hold : rampUp); // start in rampUp phase unless no ramp steps
+  phase = ((rampUpSteps == 0) ? hold : rampUp); // start in rampUp phase unless no ramp-up steps
   stepNum = 0;
-  rampDelta = 1.0 / rampSteps;  // delta to go from val=0 to val=1 by end of rampUp phase
+  rampDelta = 1.0 / (float) rampUpSteps;  // delta to go from val=0 to val=1 by end of rampUp phase (if no time truncation)
   val = 0;  // ramp function initial value at start of rampUp
   active = true;
 }
@@ -59,9 +84,20 @@ void rampClass::start(float duration) {
   Returns: None
 */
 void rampClass::start(float duration, float rampDur) {
-    setRamp(rampDur);
-    start(duration);
+    start(duration, rampDur, rampDur);  // specify equal-duration ramp-up and -down
   }
+
+
+/* rampClass::start() [Overload]
+    Starts the trapezoidal ramp function, using the default ramp durations, or those set by a previous call to setRamp()
+  Parameters: 
+    float duration: Total duration of the ramp function, including all three phases (ramp-up, hold, ramp-down).
+                    Duration = 0 specifies a ramp-up phase followed by an infinite-duration hold phase
+  Returns: None
+*/
+void rampClass::start(float duration) {
+  start(duration, rampUpTime, rampDownTime);  // call start() using parameters from previously-set class variables
+}
 
 
 /* rampClass::step()
@@ -73,34 +109,36 @@ void rampClass::step() {
   if (active) {
     switch (phase) {
       case rampUp:
-        val += rampDelta;   // apply ramp-up step to output value
+        val = min(val + rampDelta, 1.0);   // apply ramp-up step to output value
         stepNum++;
-        if (stepNum >= rampSteps) {   // if ramp-up done
-          stepNum = 0;
-          val = 1.0;
-          phase = hold;
+        if (stepNum >= rampUpSteps) {   // if ramp-up done
+          stepNum = 0;  // prep for next phase
+          if (holdSteps > 0)  // if any steps in h0ld phase
+            phase = hold;
+          else  // otherwise skipo to ramp-down phase
+            phase = rampDown;
         }
       break;
       case hold:
-        val = 1.0;  //value stays at 1.0 during hold
         if (holdSteps > 0) {  // if hold duration isn't infinite
           stepNum++;
           if (stepNum >= holdSteps) { // if hold phase is done
-            if (rampSteps == 0) {   // and if ramp is zero duration
+            if (rampDownSteps == 0) {   // and if ramp-down is zero duration
               val = 0.0;
               active = false; // terminate ramp
             }
             else {  // hold is done and ramp is non-zero
               stepNum = 0;
               phase = rampDown;
+              rampDelta = (1.0 / (float) rampUpSteps);  // delta to go from val=1 to val=0 by end of rampDown phase (if no time truncation)
             }
           }
         }
       break;
       case rampDown:
-        val -= rampDelta;
+        val = max(val - rampDelta, 0);  // apply ramp-down step to output value
         stepNum++;
-        if (stepNum >= rampSteps) {
+        if (stepNum >= rampDownSteps) {
           val = 0.0;
           active = false;
         }

@@ -10,11 +10,12 @@ class flickerClass : public effect {   // derived from "effect" class defined in
   uint16_t cycleStepNum;  // step number in a cycle
   rampClass ramp;       // embedded ramp function
   float flickVal;     // flicker function value, not scaled by ramp
+  uint32_t minTarget;   // minimum target for flickVal (integer format) based on start() parameter
   float maxDelta;       // max change in flickVal per step
   float targetVal;     // current (random) value being applied in this cycle
 public:
   flickerClass() {active = false;};
-  void start(float duration, float frequency, float filter);
+  void start(float duration, float frequency, float filter, float minVal);
   void step();
   void setRamp(float rampTime);
   float val();

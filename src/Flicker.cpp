@@ -4,7 +4,7 @@
     The flicker is applied at a constant (specified) frequency where target flicker output level is randomly chosen for each cycle.
     A specified filter value constrains the maximum per-cycle change from the current level in the direction of the new target level,
     enabling control over the "smoothness" of the flciker effect. The flickerClass::val() can be used to modulate the brightness of 
-    one or more LEDs, or can be used to control the number of consecutive LEDs in a strip are turned on. The flicker effect includes
+    one or more LEDs, or can be used to control the number of consecutive LEDs in a strip that are turned on. The flicker effect includes
     an embedded ramp function that can be used to fade in/out the flicker effect. 
 */
 #include <Arduino.h>
@@ -32,16 +32,18 @@ void flickerClass::setRamp(float rampDur) {
     float frequency: Frequency of the flicker (Hz)
     float filter: Value between 0 and 0.99999 that specifies a constraint on the slew rate of flickVal in response to a new flicker
                   cycle targetVal. filter = 0 specifies no filtering (fastest response)
+    float minVal: Specifies a minimum value (0 - 1) of flickerClass::flickVal prior to scaling by the ramp function
   Returns: None
 */
-void flickerClass::start(float duration, float frequency, float filter) {
+void flickerClass::start(float duration, float frequency, float filter, float minVal) {
   effectSteps = ComputeSteps(duration);
   frequency = max(frequency, 0.01); 
   maxDelta = (float) 1.0 - filter;  // maxDelta = 1.0 when (filter == 0)
   cycleSteps = ComputeSteps((float) 1.0 / frequency);
+  minTarget = (uint32_t) (minVal * 100);  // compute min value to use in random() fucntion in step()
   stepNum = 0;
   cycleStepNum = 0;
-  flickVal = 0;
+  flickVal = minVal;
   ramp.start(duration);   // start the embedded ramp
   active = true;
 }
@@ -57,7 +59,7 @@ void flickerClass::step() {
 
   if (active) {
     if (cycleStepNum == 0) {  // if beginning of new cycle
-      targetVal = (float) random(101) / 100;  // get random value between 0.0 and 1.0
+      targetVal = (float) random(minTarget, 101) / 100;  // get random value between 0.0 and 1.0
     }
     delta = targetVal - flickVal;  
     if (delta > 0) {                      // new targetVal is > current flickVal
