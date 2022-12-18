@@ -16,6 +16,19 @@
     Sets the duration of the embedded ramp function (set Ramp.cpp) that is used to gradually increase, hold, and then decrease
     the flicker effect output (based on flickVal) over the duration of the effect.
   Parameters: 
+    float rampUpDur: duration of each of the ramp-up phases (seconds)
+    float rampDownDur: duration of each of the ramp-down phases (seconds)
+  Returns: None
+*/
+void flickerClass::setRamp(float rampUpDur, float rampDownDur) {
+  ramp.setRamp(rampUpDur, rampDownDur);
+}
+
+
+/* setRamp() [Overload]
+    Sets the duration of the embedded ramp function (set Ramp.cpp) that is used to gradually increase, hold, and then decrease
+    the flicker effect output (based on flickVal) over the duration of the effect.
+  Parameters: 
     float rampDur: duration of each of the ramp-up and ramp-down phases (seconds)
   Returns: None
 */

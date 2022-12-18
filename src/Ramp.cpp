@@ -60,18 +60,24 @@ void rampClass::start(float duration, float rampUpDur, float rampDownDur) {
       rampUpSteps = ComputeSteps(rampTime); 
       rampDownSteps = ComputeSteps(duration - rampTime);  // remaining time used for down ramp
       holdSteps = 0;
-    }
-    else {  // diration is long enough to accommodate full ramp up/down
+  }
+    else {  // duration is long enough to accommodate full ramp up/down
       rampUpSteps = ComputeSteps(rampUpTime);
       rampDownSteps = ComputeSteps(rampDownTime);
       holdSteps = ComputeSteps(duration - rampUpTime - rampDownTime);
     }
   }
-  phase = ((rampUpSteps == 0) ? hold : rampUp); // start in rampUp phase unless no ramp-up steps
+  if (rampUpSteps == 0) {   // if no ramp-up phase
+    val = 1.0;      // set val to max value
+    phase = hold;   // go directly to hold phase
+  }
+  else {    // prepare to start ramp-up
+    phase = rampUp;
+    rampDelta = 1.0 / (float) rampUpSteps;  // delta to go from val=0 to val=1 by end of rampUp phase (if no time truncation)
+    val = 0;  // ramp function initial value at start of rampUp
+  }
   stepNum = 0;
-  rampDelta = 1.0 / (float) rampUpSteps;  // delta to go from val=0 to val=1 by end of rampUp phase (if no time truncation)
-  val = 0;  // ramp function initial value at start of rampUp
-  active = true;
+  active = true;  
 }
 
 
@@ -113,7 +119,7 @@ void rampClass::step() {
         stepNum++;
         if (stepNum >= rampUpSteps) {   // if ramp-up done
           stepNum = 0;  // prep for next phase
-          if (holdSteps > 0)  // if any steps in h0ld phase
+          if (holdSteps > 0)  // if any steps in hold phase
             phase = hold;
           else  // otherwise skipo to ramp-down phase
             phase = rampDown;
@@ -130,7 +136,7 @@ void rampClass::step() {
             else {  // hold is done and ramp is non-zero
               stepNum = 0;
               phase = rampDown;
-              rampDelta = (1.0 / (float) rampUpSteps);  // delta to go from val=1 to val=0 by end of rampDown phase (if no time truncation)
+              rampDelta = (1.0 / (float) rampDownSteps);  // delta to go from val=1 to val=0 by end of rampDown phase (if no time truncation)
             }
           }
         }

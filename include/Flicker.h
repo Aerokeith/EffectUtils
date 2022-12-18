@@ -18,6 +18,7 @@ public:
   void start(float duration, float frequency, float filter, float minVal);
   void step();
   void setRamp(float rampTime);
+  void setRamp(float rampUpTime, float rampDownTime);
   float val();
 };
 
