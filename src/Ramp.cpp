@@ -57,23 +57,24 @@ void rampClass::start(float duration, float rampUpDur, float rampDownDur) {
     if (duration < (rampUpTime + rampDownTime)) {   // if duration is to short to accommodate full ramp-up/down
         // compute time at intersection of up and down ramps, constrained by total duration
       rampTime = ((-1/rampDownTime) * duration) / ((-1/rampDownTime) - (1/rampUpTime));
-      rampUpSteps = ComputeSteps(rampTime); 
+      rampUpSteps = ComputeSteps(rampTime);   // truncated ramp-up duration (steps)
       rampDownSteps = ComputeSteps(duration - rampTime);  // remaining time used for down ramp
-      holdSteps = 0;
-  }
+      holdSteps = 1;  // bare-minimunm hold phase, to avoid step() implementing infinite hold (holdSteps == 0)
+    }
     else {  // duration is long enough to accommodate full ramp up/down
       rampUpSteps = ComputeSteps(rampUpTime);
       rampDownSteps = ComputeSteps(rampDownTime);
-      holdSteps = ComputeSteps(duration - rampUpTime - rampDownTime);
+      holdSteps = max(ComputeSteps(duration - rampUpTime - rampDownTime), 1);   // ensure at least 1 hold step
     }
   }
   if (rampUpSteps == 0) {   // if no ramp-up phase
+    rampDelta = 0;
     val = 1.0;      // set val to max value
     phase = hold;   // go directly to hold phase
   }
   else {    // prepare to start ramp-up
+    rampDelta = 1.0 / (float) ComputeSteps(rampUpTime); // compute slope based on non-truncated duration
     phase = rampUp;
-    rampDelta = 1.0 / (float) rampUpSteps;  // delta to go from val=0 to val=1 by end of rampUp phase (if no time truncation)
     val = 0;  // ramp function initial value at start of rampUp
   }
   stepNum = 0;

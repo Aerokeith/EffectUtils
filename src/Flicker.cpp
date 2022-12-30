@@ -53,10 +53,10 @@ void flickerClass::start(float duration, float frequency, float filter, float mi
   frequency = max(frequency, 0.01); 
   maxDelta = (float) 1.0 - filter;  // maxDelta = 1.0 when (filter == 0)
   cycleSteps = ComputeSteps((float) 1.0 / frequency);
-  minTarget = (uint32_t) (minVal * 100);  // compute min value to use in random() fucntion in step()
+  minTarget = (uint32_t) (minVal * 100);  // compute min value to use in random() function in step()
   stepNum = 0;
   cycleStepNum = 0;
-  flickVal = minVal;
+  flickVal = minVal + ((1 - minVal) / 2);   // start at 50% full scale
   ramp.start(duration);   // start the embedded ramp
   active = true;
 }
