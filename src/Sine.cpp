@@ -3,9 +3,13 @@
     is specified as a single-sided absolute value (0 - 1), meaning that the peak-to-peak amplitude can be up to 2. The offset 
     can be in the range 0 - 1. The value() function returns the current offset sine wave value, clipped to the range 0 - 1. Example:
     offset = 0.5, level = 0.5 produces a full-range  sine wave with no clipping. 
-    Once started with the first call to the update() function, the effect never terminates. A rampDur parameter value of > 0 
-    indicates that the specified parameter values (frequency, amplitude, level) are to be ramped from their current value to the 
-    specified new values over the ramp duration. 
+    A rampDur parameter value of > 0 indicates that the specified parameter values (frequency, level, amplitude) are to be ramped from 
+    their current value to the specified new values over the ramp duration. RampDur=0 causes the specified parameters to be applied
+    immediately, and this can be used to establish initial conditions for a subsequent ramp to otrher values. 
+    Once started by a call to sineClass::update(), there are only two ways to terminate this effect:
+      1. update() is called with frequency=0. The effect is terminated (becomes inactive) immediately
+      2. update() is called with amplitude=0. The effect remains active until the sine wave amplitude is ramped down to 0, based on the 
+          time specxified in rampDur. 
 */
 #include <Arduino.h>
 #include "EffectUtils.h"
@@ -19,7 +23,8 @@
     float level: target offset of sine wave baseline from 0 (0 - 1)
     float frequency: Sine wave frequency (in Hz)
     float ampl: Defines the maximum absolute value of the sine wave (0 - 1) prior to the offset being applied
-    float rampTime: Duration of ramp from the previous sine wave parameters to the new values specified by the 3 parameters above
+    float rampTime: Duration of ramp from the previous sine wave parameters to the new values specified by the 3 parameters above.
+                      A value of 0 causes the other parameters to be applied immediately.
   Returns: None
 */
 void sineClass::update(float freq, float level, float ampl, float rampDur) {
@@ -69,10 +74,14 @@ void sineClass::step() {
 */
 float sineClass::value(float phaseOffsetFrac) {
   float phaseOffset;
+  float retVal;
 
   phaseOffset = TWO_PI * phaseOffsetFrac;
   if (active) {
-    return (constrain((sin(phaseAngle + phaseOffset) * amplitude) + offset, 0, 1));
+    retVal = constrain((sin(phaseAngle + phaseOffset) * amplitude) + offset, 0, 1);
+    if (amplitude == 0)   // if the amplitude has been ramped down to 0
+      active = false;     // terminate this effect
+    return (retVal);
   }
   else
     return (0);   // wave output is always 0 when inactive
