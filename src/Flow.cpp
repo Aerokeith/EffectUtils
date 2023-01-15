@@ -22,7 +22,7 @@ void flowClass::start(float duration, float distance, float rampLen) {
   effectSteps = ComputeSteps(duration);  // total number of steps in fade effect
   deltaDist = distance / (float) effectSteps;   // compute "speed" of flow leading edge (mm/step)
   rampWidth = constrain(rampLen, 1, distance);    // ramp width must be > 0 and <= distance
-  rampSlope = (float) 1.0 / rampLen;   // = delta-value / delta-distance
+  rampSlope = (float) 1.0 / rampWidth;   // = delta-value / delta-distance
   curPos = 0;
   completedFlag = false;
   stepNum = 0;
