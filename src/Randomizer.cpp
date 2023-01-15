@@ -5,7 +5,8 @@
     value is the same. Optionally, the probability of type value 0 may be specified (type0Prob), and then the remaining values have
     a probability of (1 - type0Prob) / (N - 1). 
     A method is provided to access the type value assigned to each pixel, which remain fixed until an explicit call to re-randomize
-    the type values. This requires the class to dynamically allocate memory (1 byte per pixel) to store the type values. 
+    the type values. During initialization of the class instance, memory is dynamically allocated  (1 byte per pixel) to store the 
+    type values. 
 */
 #include <Arduino.h>
 #include "Randomizer.h"
