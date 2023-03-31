@@ -59,7 +59,7 @@ void rampClass::start(float duration, float rampUpDur, float rampDownDur) {
       rampTime = ((-1/rampDownTime) * duration) / ((-1/rampDownTime) - (1/rampUpTime));
       rampUpSteps = ComputeSteps(rampTime);   // truncated ramp-up duration (steps)
       rampDownSteps = ComputeSteps(duration - rampTime);  // remaining time used for down ramp
-      holdSteps = 1;  // bare-minimunm hold phase, to avoid step() implementing infinite hold (holdSteps == 0)
+      holdSteps = 1;  // bare-minimum hold phase, to avoid step() implementing infinite hold (holdSteps == 0)
     }
     else {  // duration is long enough to accommodate full ramp up/down
       rampUpSteps = ComputeSteps(rampUpTime);
@@ -120,10 +120,7 @@ void rampClass::step() {
         stepNum++;
         if (stepNum >= rampUpSteps) {   // if ramp-up done
           stepNum = 0;  // prep for next phase
-          if (holdSteps > 0)  // if any steps in hold phase
-            phase = hold;
-          else  // otherwise skipo to ramp-down phase
-            phase = rampDown;
+          phase = hold;
         }
       break;
       case hold:
